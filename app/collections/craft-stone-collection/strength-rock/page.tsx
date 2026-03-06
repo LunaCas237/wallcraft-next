@@ -11,7 +11,7 @@ import {
 
 const supabase = createClient(
   'https://mpsnwijabfingujzirri.supabase.co',
-  'YOUR_ANON_KEY_HERE'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wc253aWphYmZpbmd1anppcnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4NDUzNzIsImV4cCI6MjA4MzQyMTM3Mn0.RTNnZHJRnYjoeX9faOi324CbooNxNaW6Fm2xJrV609M'
 );
 
 interface Product {
