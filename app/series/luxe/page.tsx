@@ -367,14 +367,14 @@ export default function App() {
         title="Fabric Collection" 
         desc="ผนังลายผ้าที่สร้างบรรยากาศสบายตาและมีชีวิตชีวา ถ่ายทอดความละเมียดละไม พร้อมดีไซน์ที่คมชัดในทุกมุม เรียบง่ายแต่เต็มไปด้วยพลังของดีไซน์ที่แตกต่าง"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20135@2x.webp"
-        link="/collection/luxe-fabric"
+        link="/collections/luxe-collection/fabric"
       />
 
       <CollectionSection 
         title="Leather Collection" 
         desc="ผนังลายหนังที่สะท้อนความหรูหราอย่างมั่นใจ เติมเสน่ห์ที่มีเอกลักษณ์เฉพาะตัว คือการออกแบบที่ผสมผสานความหรูหรากับความร่วมสมัยอย่างลงตัว"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20139@2x.webp"
-        link="/collection/luxe-leather"
+        link="/collections/luxe-collection/leather"
         reverse
       />
 
@@ -382,14 +382,14 @@ export default function App() {
         title="Metallic Collection" 
         desc="ผนังเมทัลลิกที่เปล่งประกายด้วยการเล่นแสงเงา เติมความมีพลังและความโมเดิร์นให้กับทุกพื้นที่ เป็นการแสดงออกที่เฉียบคมและเต็มไปด้วยความทันสมัย"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20137@2x.webp"
-        link="/collection/luxe-metallic"
+        link="/collections/luxe-collection/metallic"
       />
 
       <CollectionSection 
         title="Semi Outdoor Collection" 
         desc="ผนัง Outdoor ที่ออกแบบมาเพื่อรองรับทุกสภาพอากาศ ทั้งแสงแดดและฝน พร้อมดีไซน์ที่โดดเด่น เป็นการผสมผสานฟังก์ชันการใช้งานเข้ากับดีไซน์ที่สะกดสายตา"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20136@2x.webp"
-        link="/collection/luxe-outdoor"
+        link="/collections/luxe-collection/outdoor"
         reverse
       />
 
@@ -397,14 +397,14 @@ export default function App() {
         title="Signature Collection" 
         desc="ผนัง Signature ถ่ายทอดความคิดสร้างสรรค์ผ่านการผสมวัสดุและเทคนิคเฉพาะ เป็นเสมือนงานแฟชั่นที่ไม่ซ้ำใครและสะท้อนสไตล์ที่ชัดเจนของคุณ"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20134@2x.webp"
-        link="/collection/luxe-signature"
+        link="/collections/luxe-collection/signature"
       />
 
       <CollectionSection 
         title="Stone Collection" 
         desc="ผนังลายหินที่สะท้อนพลังและความสง่างามของธรรมชาติ ถ่ายทอดความแข็งแรงและความโดดเด่นในทุกมิติ ดีไซน์ที่มั่นคงและมีเอกลักษณ์ในตัวเอง"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20140@2x.webp"
-        link="/collection/luxe-stone"
+        link="/collections/luxe-collection/stone"
         reverse
       />
 
@@ -412,14 +412,14 @@ export default function App() {
         title="Velvet Collection" 
         desc="ผนังเวลเวทที่มอบสัมผัสเรียบหรูและเต็มไปด้วยชั้นเชิง เพิ่มบรรยากาศที่ลุ่มลึกและน่าค้นหา เป็นการตีความใหม่ของความหรูหราให้ทันสมัยและโดดเด่น"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20138@2x.webp"
-        link="/collection/luxe-velvet"
+        link="/collections/luxe-collection/velvet"
       />
 
       <CollectionSection 
         title="Wood Collection" 
         desc="ผนังลายไม้ที่สะท้อนความเป็นธรรมชาติในรูปแบบที่ร่วมสมัย ถ่ายทอดความสมดุลของดีไซน์และฟังก์ชัน สร้างบรรยากาศที่สดใหม่และเข้ากับทุกแนวทางการตกแต่ง"
         img="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20133@2x.webp"
-        link="/collection/luxe-wood"
+        link="/collections/luxe-collection/wood"
         reverse
       />
 
