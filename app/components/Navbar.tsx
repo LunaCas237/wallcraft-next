@@ -2,13 +2,25 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaBarsStaggered, FaXmark, FaChevronDown, FaMagnifyingGlass } from 'react-icons/fa6';
+import { FaBarsStaggered, FaXmark, FaChevronDown, FaMagnifyingGlass, FaUser } from 'react-icons/fa6';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabase = createClient(
+  'https://mpsnwijabfingujzirri.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wc253aWphYmZpbmd1anppcnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4NDUzNzIsImV4cCI6MjA4MzQyMTM3Mn0.RTNnZHJRnYjoeX9faOi324CbooNxNaW6Fm2xJrV609M'
+);
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openSubMenu, setOpenSubMenu] = useState(""); // Default to empty string
+  const [openSubMenu, setOpenSubMenu] = useState(""); 
+  
+  // Auth State
+  const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
+  // Handle Scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -17,8 +29,29 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Helper to toggle submenus without errors
-  const toggleSubMenu = (name: React.SetStateAction<string>) => {
+  // Handle Auth State
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      setAuthLoading(false);
+    };
+    
+    checkUser();
+
+    // Listen for login/logout events across the app
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const toggleSubMenu = (name: string) => {
     setOpenSubMenu(openSubMenu === name ? "" : name);
   };
 
@@ -48,7 +81,7 @@ export default function Navbar() {
           <FaXmark />
         </button>
 
-        <div className="flex flex-col items-center justify-center h-full space-y-8 w-full">
+        <div className="flex flex-col items-center justify-center h-full space-y-8 w-full overflow-y-auto py-10">
           <Link href="/introduction" onClick={closeMobileMenu} className="text-[11px] uppercase tracking-[0.4em] text-white">Introduction</Link>
           
           {/* Series Section */}
@@ -61,7 +94,6 @@ export default function Navbar() {
               <FaChevronDown className={`ml-3 text-[8px] transition-transform ${openSubMenu === 'series' ? 'rotate-180' : ''}`} />
             </button>
             
-            {/* Conditional Rendering to avoid height errors */}
             <div className={`flex flex-col items-center space-y-5 overflow-hidden transition-all duration-500 ${openSubMenu === 'series' ? 'max-h-[300px] mt-8 opacity-100' : 'max-h-0 opacity-0'}`}>
               <Link href="/series/craft-stone" onClick={closeMobileMenu} className="text-[10px] uppercase tracking-[0.3em] text-[#c2bfb6]">Craft Stone</Link>
               <Link href="/series/luxe" onClick={closeMobileMenu} className="text-[10px] uppercase tracking-[0.3em] text-[#c2bfb6]">Luxe Series</Link>
@@ -85,11 +117,27 @@ export default function Navbar() {
           </div>
 
           <Link href="#" onClick={closeMobileMenu} className="text-[11px] uppercase tracking-[0.4em] text-white">Match Inspiration</Link>
+          
+          <hr className="w-12 border-white/20 my-4" />
+
+          {/* Mobile Auth Section */}
+          {!authLoading && (
+            user ? (
+              <Link href="/profile" onClick={closeMobileMenu} className="text-[11px] uppercase tracking-[0.4em] text-[#B08038] flex items-center gap-3 border border-[#B08038]/30 px-6 py-3 rounded-sm">
+                <FaUser /> My Profile
+              </Link>
+            ) : (
+              <div className="flex flex-col items-center space-y-5 pt-2">
+                <Link href="/login" onClick={closeMobileMenu} className="text-[10px] uppercase tracking-[0.3em] text-[#c2bfb6] hover:text-white transition-colors">Log In</Link>
+                <Link href="/register" onClick={closeMobileMenu} className="text-[10px] uppercase tracking-[0.3em] text-black bg-white px-8 py-3 rounded-sm hover:bg-[#B08038] hover:text-white transition-colors">Register</Link>
+              </div>
+            )
+          )}
         </div>
       </div>
 
       {/* Desktop Navigation */}
-      <nav className={`fixed top-0 w-full z-50 px-8 py-6 hidden md:block transition-all duration-400 ${scrolled ? 'bg-black/95 py-2 backdrop-blur-md border-b border-white/5' : 'bg-black/40 backdrop-blur-md border-b border-white/5'}`}>
+      <nav className={`fixed top-0 w-full z-50 px-8 py-6 hidden md:block transition-all duration-400 ${scrolled ? 'bg-black/95 py-3 backdrop-blur-md border-b border-white/5' : 'bg-black/40 backdrop-blur-md border-b border-white/5'}`}>
         <div className="max-w-[1800px] mx-auto flex justify-center items-center relative">
           <div className="absolute left-0 lg:left-8 flex items-center">
             <Link href="/">
@@ -100,8 +148,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-12">
             <Link href="/introduction" className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Band Introduction</Link>
             
-            {/* Series Dropdown (เดิม) - อาจจะลบออกถ้า Collection ครอบคลุมแล้ว หรือเก็บไว้ตามดีไซน์ */}
-            {/* ถ้าต้องการเก็บไว้ก็ปล่อยไว้ครับ แต่ถ้าจะรวม ให้ลบ section นี้ทิ้งได้เลย */}
+            {/* Series Dropdown */}
              <div className="relative py-2 flex items-center group cursor-pointer">
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Series</span>
               <div className="ml-2 p-1 group-hover:rotate-180 transition-transform duration-300">
@@ -139,6 +186,26 @@ export default function Navbar() {
             <button className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center">
               Search <FaMagnifyingGlass className="ml-3 opacity-60" />
             </button>
+            
+            <div className="w-px h-4 bg-white/20 hidden lg:block"></div>
+
+            {/* Desktop Auth Section */}
+            {!authLoading && (
+              user ? (
+                <Link href="/profile" className="text-[#B08038] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center gap-2">
+                  <FaUser className="text-xs" /> Profile
+                </Link>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Link href="/login" className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase">
+                    Log In
+                  </Link>
+                  <Link href="/register" className="text-black bg-white hover:bg-[#B08038] hover:text-white transition-colors text-[9px] tracking-widest uppercase px-4 py-2 rounded-sm font-bold">
+                    Register
+                  </Link>
+                </div>
+              )
+            )}
           </div>
         </div>
       </nav>
