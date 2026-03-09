@@ -297,7 +297,7 @@ export default function FinessePage() {
     <div className="font-sans bg-[#0a0a0a] text-white min-h-screen selection:bg-[#B08038]/30">
       <header className="relative w-full h-[90vh] overflow-hidden flex items-center text-left bg-black">
         <img
-          src="https://mpsnwijabfingujzirri.supabase.co/storage/v1/object/public/wallcraft_web/collections_cover/finesse.webp"
+          src="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/collections_cover/finesse.webp"
           alt="Finesse Collection Hero"
           className="absolute inset-0 w-full h-full object-cover object-center block select-none z-0"
         />
