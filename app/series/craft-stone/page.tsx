@@ -350,7 +350,7 @@ export default function App() {
                             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight uppercase headline-gold mb-4 lg:mb-6 leading-[1.1] drop-shadow-md">
                                 Craft Stone<br/>Series
                             </h1>
-                            <p className="text-[12px] sm:text-sm md:text-base font-light leading-relaxed max-w-[280px] sm:max-w-md text-gray-200 drop-shadow-md">
+                            <p className="text-[12px] sm:text-sm md:text-base font-light leading-relaxed max-w-[280px] sm:max-w-md text-[#c2bfb6] drop-shadow-md">
                                 วัสดุตกแต่งผนังนวัตกรรมใหม่ ผลิตจากแร่ธรรมชาติ (Eco Clay Composite) มอบคุณสมบัติเด่น น้ำหนักเบา ยืดหยุ่น แข็งแรง และเป็นมิตรต่อสิ่งแวดล้อม
                             </p>
                         </div>
@@ -362,7 +362,7 @@ export default function App() {
                     <div className="text-center mb-16 px-6">
                         <Separator />
                         <h2 className="text-4xl md:text-6xl font-bold tracking-tight mt-6 uppercase text-white">Structure Detail</h2>
-                        <p className="text-gray-400 mt-4 max-w-xl mx-auto text-sm">เจาะลึกโครงสร้าง 4 ชั้นที่ทำให้ Craft Stone โดดเด่นกว่าวัสดุทั่วไป</p>
+                        <p className="text-[#c2bfb6] mt-4 max-w-xl mx-auto text-sm">เจาะลึกโครงสร้าง 4 ชั้นที่ทำให้ Craft Stone โดดเด่นกว่าวัสดุทั่วไป</p>
                     </div>
 
                     <div ref={stackContainerRef} className="relative w-full max-w-6xl h-[550px] md:h-[650px] flex justify-center items-center perspective-container">
@@ -406,7 +406,7 @@ export default function App() {
                                         <div className="md:hidden mt-10 px-8 w-full animate-fade-in-up">
                                             <div className="bg-zinc-900/90 p-6 border-t-2 border-[#B08038] rounded-b-xl">
                                                 <h3 className="headline-gold font-bold text-lg uppercase mb-2">{layer.title}</h3>
-                                                <p className="text-gray-200 text-sm leading-relaxed">{layer.description}</p>
+                                                <p className="text-[#c2bfb6] text-sm leading-relaxed">{layer.description}</p>
                                             </div>
                                         </div>
                                     )}
@@ -442,10 +442,10 @@ export default function App() {
                         <section key={idx} className={`flex flex-col ${col.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} min-h-[70vh] items-center border-t border-white/5 py-16`}>
                             <div className="w-full lg:w-1/2 px-8 md:px-16 lg:px-24 mb-10 lg:mb-0">
                                 <Separator />
-                                <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8 text-white">
-                                    {col.title} <span className="text-gray-500 block">Collection</span>
+                                <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8 text-[#B08038]">
+                                    {col.title} <span className="text-[#c2bfb6] block">Collection</span>
                                 </h2>
-                                <a href={col.link} className="inline-block border border-gray-700 px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-white hover:text-black transition-all">
+                                <a href={col.link} className="inline-block border border-gray-700 px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#c2bfb6] hover:bg-white hover:text-black transition-all">
                                     View Collection
                                 </a>
                             </div>
@@ -471,7 +471,7 @@ export default function App() {
                                     <div className="aspect-[4/5] overflow-hidden mb-6 border border-zinc-800 rounded-sm">
                                         <img src={step.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Step" />
                                     </div>
-                                    <p className="text-sm text-gray-400 leading-relaxed px-2">{step.text}</p>
+                                    <p className="text-sm text-[#c2bfb6] leading-relaxed px-2">{step.text}</p>
                                 </AnimatedSection>
                             ))}
                         </div>
@@ -489,7 +489,7 @@ export default function App() {
                             {PERFORMANCE_TESTS.map((test, i) => (
                                 <div key={i} className="flex flex-col items-center text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-800/50">
                                     <img src={test.img} className="w-16 h-16 mb-6 object-contain" alt="Icon" />
-                                    <p className="text-[11px] leading-relaxed text-gray-400 uppercase tracking-wide">{test.text}</p>
+                                    <p className="text-[11px] leading-relaxed text-[#c2bfb6] uppercase tracking-wide">{test.text}</p>
                                 </div>
                             ))}
                         </div>

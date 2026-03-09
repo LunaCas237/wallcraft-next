@@ -103,7 +103,7 @@ const CollectionSection = ({
         <div className="max-w-lg mx-auto lg:mx-0">
           <Separator />
           <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8" style={{ color: '#B08038' }}>
-            {mainTitle} <span className="text-white"><br />{subTitle}</span>
+            {mainTitle} <span className="text-[#c2bfb6]"><br />{subTitle}</span>
           </h2>
           <p className="text-[10px] md:text-sm font-light leading-relaxed max-w-md mb-10 text-[#c2bfb6]">
             {desc}

@@ -101,13 +101,13 @@ const CollectionSection = ({
       <div className={`w-full lg:w-[50%] flex flex-col justify-center px-8 md:px-16 lg:px-24`}>
         <div className="max-w-lg mx-auto lg:mx-0">
           <Separator />
-          <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8" style={{ color: color }}>
-            {title}<br /><span className="text-white">{highlight}</span>
+          <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8" style={{color: '#B08038' }}>
+            {title}<br /><span className="text-[#c2bfb6]">{highlight}</span>
           </h2>
           <p className="text-[10px] md:text-sm font-light leading-relaxed max-w-md mb-10 text-[#c2bfb6]">
             {desc}
           </p>
-          <a href={link} className="inline-block border border-gray-700 px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-white hover:text-black transition-all">
+          <a href={link} className="inline-block border border-[#c2bfb6] px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#c2bfb6] hover:bg-white hover:text-black transition-all">
             Learn More
           </a>
         </div>
@@ -296,7 +296,7 @@ export default function App() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight uppercase headline-gold mb-4 lg:mb-6 leading-[1.1] drop-shadow-md">
               Essential<br/>Series
             </h1>
-            <p className="text-[12px] sm:text-sm md:text-base font-light leading-relaxed max-w-[280px] sm:max-w-md text-gray-200 drop-shadow-md">
+            <p className="text-[12px] sm:text-sm md:text-base font-light leading-relaxed max-w-[280px] sm:max-w-md text-[#c2bfb6] drop-shadow-md">
               ผนังดีไซน์ใหม่ที่มอบทางเลือกการติดตั้งและการจบงานที่สมบูรณ์แบบ ครอบคลุมทั้ง Flat, 3D Wall และ LED ช่วยลดโอกาสการเกิดปัญหาหน้างาน
             </p>
           </div>
@@ -308,7 +308,7 @@ export default function App() {
         <div className="text-center mb-16 px-6">
           <Separator />
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight mt-6 uppercase text-[#B08038]">Structure Detail</h2>
-          <p className="text-gray-400 mt-4 max-w-xl mx-auto text-sm">การผสมผสานวัสดุและเทคโนโลยี เพื่อความสวยงามที่ยั่งยืน</p>
+          <p className="text-[#c2bfb6] mt-4 max-w-xl mx-auto text-sm">การผสมผสานวัสดุและเทคโนโลยี เพื่อความสวยงามที่ยั่งยืน</p>
         </div>
 
         <div ref={stackContainerRef} className="relative w-full max-w-6xl h-[500px] md:h-[600px] flex justify-center items-center" style={{ perspective: '2500px' }}>
@@ -354,7 +354,7 @@ export default function App() {
                   <div className="md:hidden mt-8 px-8 w-full animate-fade-in-up">
                     <div className="bg-zinc-900/90 p-6 border-t-2 border-[#B08038] rounded-b-xl text-center">
                       <h3 className="headline-gold font-bold text-lg uppercase mb-2">{layer.title}</h3>
-                      <p className="text-gray-200 text-[11px] leading-relaxed">{layer.description}</p>
+                      <p className="text-[#c2bfb6] text-[11px] leading-relaxed">{layer.description}</p>
                     </div>
                   </div>
                 )}
