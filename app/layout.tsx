@@ -6,9 +6,9 @@ config.autoAddCss = false;
 
 import "./globals.css";
 
-// ✅ 1. Import ทั้ง Navbar และ Footer
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+// ✅ 1. Import the Conditional Wrappers instead of the direct components
+import ConditionalNavbar from "./components/Navbar";
+import ConditionalFooter from "./components/ConditionalFooter";
 
 const prompt = Prompt({
   subsets: ["thai", "latin"],
@@ -38,14 +38,14 @@ export default function RootLayout({
     <html lang="en" className={`${prompt.variable} ${notoSansThai.variable}`}>
       <body className={`antialiased noise font-sans text-[#808080]`}>
         
-        {/* ส่วนหัว (แสดงทุกหน้า) */}
-        <Navbar />
+        {/* ส่วนหัว (จะซ่อนอัตโนมัติในหน้า login/register) */}
+        <ConditionalNavbar />
         
         {/* เนื้อหาของแต่ละหน้า */}
         {children}
 
-        {/* ส่วนท้าย (แสดงทุกหน้า) */}
-        <Footer />
+        {/* ส่วนท้าย (จะซ่อนอัตโนมัติในหน้า login/register) */}
+        <ConditionalFooter />
         
       </body>
     </html>

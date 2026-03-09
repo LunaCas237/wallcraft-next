@@ -58,12 +58,12 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
-      setSuccessMsg("Registration successful! Please check your email to verify your account.");
+      setSuccessMsg("Registration successful! Redirecting you to the home page...");
       
-      // Optional: Auto-redirect to login after 3 seconds
+      // Auto-redirect to index page after 2 seconds
       setTimeout(() => {
         router.push('/');
-      }, 3000);
+      }, 2000);
 
     } catch (err: any) {
       setErrorMsg(err.message || "An error occurred during registration.");
