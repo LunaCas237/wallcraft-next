@@ -6,7 +6,6 @@ config.autoAddCss = false;
 
 import "./globals.css";
 
-// ✅ 1. Import the Conditional Wrappers instead of the direct components
 import ConditionalNavbar from "./components/Navbar";
 import ConditionalFooter from "./components/ConditionalFooter";
 
