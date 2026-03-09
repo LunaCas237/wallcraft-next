@@ -416,7 +416,7 @@ export default function App() {
                     </div>
 
                     <div className="text-[#c2bfb6] mt-12 flex flex-col items-center gap-6 relative z-40">
-                        <button onClick={() => { setIsStacked(!isStacked); setActiveLayerIndex(null); }} className="btn-explore">
+                        <button onClick={() => { setIsStacked(!isStacked); setActiveLayerIndex(null); }} className="btn-explore text-[#c2bfb6]">
                             {isStacked ? 'Explore Layers' : 'Stack Layers'}
                         </button>
                     </div>
