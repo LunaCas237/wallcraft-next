@@ -167,37 +167,45 @@ export default function GeoformPage() {
     if (addTimerRef.current) clearTimeout(addTimerRef.current);
   };
 
-  const saveToProfile = async (productId: string) => {
+  // NEW: Flexible function that handles both tables
+  const saveToDatabase = async (productId: string, tableName: 'user_favorites' | 'user_downloads') => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        alert("Please login to save favorites.");
+        alert(`Please login to ${tableName === 'user_favorites' ? 'save favorites' : 'download items'}.`);
         return false;
       }
       const { error } = await supabase
-        .from('user_downloads')
+        .from(tableName)
         .insert([{ user_id: session.user.id, product_id: productId }]);
 
       if (error) {
-        if (error.code === '23505') alert("This item is already in your favorites.");
-        else throw error;
+        // If it's a duplicate entry in favorites, show a polite message
+        if (error.code === '23505' && tableName === 'user_favorites') {
+          alert("This item is already in your favorites.");
+        } else if (error.code !== '23505') {
+          throw error;
+        }
       }
       return true;
     } catch (err) {
-      console.error("Favorite Error:", err);
-      alert("Failed to save to profile.");
+      console.error(`Database Error (${tableName}):`, err);
       return false;
     }
   };
 
   const handleFavorite = async (productId: string | null) => {
+
     if (!productId) {
       alert("Please select a specific finish first.");
       return;
     }
     setIsFavoriting(true);
-    const success = await saveToProfile(productId);
-    if (success) alert("Added to your saved textures in Profile!");
+    const success = await saveToDatabase(productId, 'user_favorites');
+    
+    if (success) {
+      alert("SUCCESS: Database confirmed it went to user_favorites!");
+    }
     setIsFavoriting(false);
   };
 
@@ -221,7 +229,8 @@ export default function GeoformPage() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
 
-      await saveToProfile(modalState.activeProductId);
+      // Specifically send this to user_downloads
+      await saveToDatabase(modalState.activeProductId, 'user_downloads');
 
       addTimerRef.current = setTimeout(() => {
         setRequestAdded(false);
