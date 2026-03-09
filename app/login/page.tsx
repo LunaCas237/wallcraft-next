@@ -70,8 +70,8 @@ export default function LoginPage() {
             <div className="bg-[#B08038] w-1/3" />
           </div>
           <h1 className="text-5xl font-bold tracking-tight mb-4 drop-shadow-lg text-left">
-            <span className="text-[#B08038]">Welcome</span> Back<br/>
-            <span className="text-[#c2bfb6]">to Wallcraft.</span>
+            <span className="text-[#B08038]">Welcome Back <br/> </span>
+            <span className="text-[#c2bfb6]">To Wallcraft.</span>
           </h1>
           <p className="text-[#c2bfb6] font-light max-w-md text-sm leading-relaxed text-left">
             Sign in to access your saved textures, download high-resolution assets, and continue your modular wall design projects.

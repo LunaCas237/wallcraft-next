@@ -92,10 +92,10 @@ export default function RegisterPage() {
             <div className="bg-[#B08038] w-1/3" />
           </div>
           <h1 className="text-5xl font-bold tracking-tight mb-4 drop-shadow-lg">
-            <span className="text-[#B08038]">Craft</span> Your<br/>
+            <span className="text-[#B08038]">Craft Your<br/></span>
             <span className="text-[#c2bfb6]">Space.</span>
           </h1>
-          <p className="text-zinc-400 font-light max-w-md text-sm leading-relaxed">
+          <p className="text-[#c2bfb6] font-light max-w-md text-sm leading-relaxed">
             Join Wallcraft to save your favorite textures, download high-quality assets, and manage your modular wall design projects seamlessly.
           </p>
         </div>
@@ -106,8 +106,8 @@ export default function RegisterPage() {
         <div className="w-full max-w-md animate-reveal">
           
           <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-3xl font-medium tracking-wide text-white mb-2 uppercase">Create Account</h2>
-            <p className="text-zinc-500 text-sm font-light">Enter your details to register with Wallcraft.</p>
+            <h2 className="text-3xl font-medium tracking-wide text-[#B08038] mb-2 uppercase">Create Account</h2>
+            <p className="text-[#c2bfb6] text-sm font-light">Enter your details to register with Wallcraft.</p>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-5">
@@ -115,24 +115,24 @@ export default function RegisterPage() {
             {/* Name Fields Grid */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold block">First Name</label>
+                <label className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] font-bold block">First Name</label>
                 <input 
                   type="text" 
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-[#c2bfb6] placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
                   placeholder="John"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold block">Last Name</label>
+                <label className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] font-bold block">Last Name</label>
                 <input 
                   type="text" 
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-[#c2bfb6] placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
                   placeholder="Doe"
                 />
               </div>
@@ -140,39 +140,39 @@ export default function RegisterPage() {
 
             {/* Email Field */}
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold block">Email Address</label>
+              <label className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] font-bold block">Email Address</label>
               <input 
                 type="email" 
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-[#c2bfb6] placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
                 placeholder="you@example.com"
               />
             </div>
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold block">Password</label>
+              <label className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] font-bold block">Password</label>
               <input 
                 type="password" 
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-[#c2bfb6] placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
                 placeholder="••••••••"
               />
             </div>
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold block">Confirm Password</label>
+              <label className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] font-bold block">Confirm Password</label>
               <input 
                 type="password" 
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-sm text-[#c2bfb6] placeholder-zinc-600 focus:outline-none focus:border-[#B08038] transition-colors"
                 placeholder="••••••••"
               />
             </div>
@@ -193,7 +193,7 @@ export default function RegisterPage() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full mt-4 bg-[#B08038] hover:bg-[#8f662a] text-white uppercase text-[11px] font-bold tracking-[0.2em] py-4 rounded-sm transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full mt-4 bg-[#B08038] hover:bg-[#8f662a] text-[#c2bfb6] uppercase text-[11px] font-bold tracking-[0.2em] py-4 rounded-sm transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -208,7 +208,7 @@ export default function RegisterPage() {
           </form>
 
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-zinc-500 text-xs">
+            <p className="text-[#c2bfb6] text-xs">
               Already have an account?{' '}
               <Link href="/login" className="text-[#B08038] hover:text-white transition-colors underline-offset-4 hover:underline">
                 Log In
