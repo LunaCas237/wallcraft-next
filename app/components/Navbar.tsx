@@ -2,19 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FaBarsStaggered, FaXmark, FaChevronDown, FaMagnifyingGlass, FaUser } from 'react-icons/fa6';
-import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client
-const supabase = createClient(
-  'https://mpsnwijabfingujzirri.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wc253aWphYmZpbmd1anppcnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4NDUzNzIsImV4cCI6MjA4MzQyMTM3Mn0.RTNnZHJRnYjoeX9faOi324CbooNxNaW6Fm2xJrV609M'
-);
+// 1. Delete the "import { createClient }..." line.
+// 2. Add this import instead (pointing to your lib folder):
+import { supabase } from '../lib/supabase';
 
 export default function Navbar() {
+  const router = useRouter();
+  // ... all your existing state and logic stays exactly the same!
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState(""); 
+  
+  // Search State
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   
   // Auth State
   const [user, setUser] = useState<any>(null);
@@ -39,7 +43,6 @@ export default function Navbar() {
     
     checkUser();
 
-    // Listen for login/logout events across the app
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user || null);
@@ -50,6 +53,17 @@ export default function Navbar() {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Search Submission Logic
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      // Redirects to /search?q=your-term
+      router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+      setIsSearchOpen(false);
+      setSearchTerm("");
+    }
+  };
 
   const toggleSubMenu = (name: string) => {
     setOpenSubMenu(openSubMenu === name ? "" : name);
@@ -68,7 +82,9 @@ export default function Navbar() {
           <img src="https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/Logo_Images/wallcraft%20logo%20grey%20color.webp" alt="Logo" className="h-6 w-auto" />
         </Link>
         <div className="flex items-center space-x-5">
-          <FaMagnifyingGlass className="text-white/60 text-sm" />
+          <Link href="/search">
+            <FaMagnifyingGlass className="text-white/60 text-sm" />
+          </Link>
           <button className="text-white/80 text-xl" onClick={() => setIsMobileMenuOpen(true)}>
             <FaBarsStaggered />
           </button>
@@ -84,7 +100,6 @@ export default function Navbar() {
         <div className="flex flex-col items-center justify-center h-full space-y-8 w-full overflow-y-auto py-10">
           <Link href="/introduction" onClick={closeMobileMenu} className="text-[11px] uppercase tracking-[0.4em] text-white">Introduction</Link>
           
-          {/* Series Section */}
           <div className="w-full flex flex-col items-center">
             <button 
               onClick={() => toggleSubMenu('series')}
@@ -101,7 +116,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Art & Gallery Section */}
           <div className="w-full flex flex-col items-center">
             <button 
               onClick={() => toggleSubMenu('art')}
@@ -120,7 +134,6 @@ export default function Navbar() {
           
           <hr className="w-12 border-white/20 my-4" />
 
-          {/* Mobile Auth Section */}
           {!authLoading && (
             user ? (
               <Link href="/profile" onClick={closeMobileMenu} className="text-[11px] uppercase tracking-[0.4em] text-[#B08038] flex items-center gap-3 border border-[#B08038]/30 px-6 py-3 rounded-sm">
@@ -148,8 +161,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-12">
             <Link href="/introduction" className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Band Introduction</Link>
             
-            {/* Series Dropdown */}
-             <div className="relative py-2 flex items-center group cursor-pointer">
+            <div className="relative py-2 flex items-center group cursor-pointer">
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Series</span>
               <div className="ml-2 p-1 group-hover:rotate-180 transition-transform duration-300">
                 <FaChevronDown className="text-[8px] opacity-40 group-hover:text-[#B08038] group-hover:opacity-100" />
@@ -163,7 +175,6 @@ export default function Navbar() {
               </div>
             </div>
             
-            {/* Art Dropdown */}
             <div className="relative py-2 flex items-center group cursor-pointer">
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Art & Gallery</span>
               <div className="ml-2 p-1 group-hover:rotate-180 transition-transform duration-300">
@@ -179,17 +190,42 @@ export default function Navbar() {
 
             <Link href="#" className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Match Inspiration</Link>
             <Link href="#" className="text-[10px] uppercase tracking-[0.4em] text-[#c2bfb6] hover:text-[#B08038] transition-colors">Studio Q&A</Link>
-          
           </div>
 
           <div className="absolute right-0 lg:right-8 flex items-center space-x-6">
-            <button className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center">
-              Search <FaMagnifyingGlass className="ml-3 opacity-60" />
-            </button>
+            {/* SEARCH LOGIC START */}
+<div className="relative flex items-center">
+  {isSearchOpen ? (
+    <form 
+      onSubmit={handleSearchSubmit} 
+      // I added 'absolute right-0 bg-black' here so it covers the existing buttons instead of squishing them
+      className="absolute right-0 flex items-center bg-black/90 backdrop-blur-md border border-white/20 rounded-sm px-3 py-1.5 animate-in fade-in slide-in-from-right-4 duration-300 z-50"
+    >
+      <input
+        autoFocus
+        type="text"
+        placeholder="SEARCH WALLPAPERS..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="bg-transparent text-white text-[9px] outline-none w-48 md:w-64 tracking-widest uppercase placeholder:text-white/40"
+      />
+      <button type="button" onClick={() => setIsSearchOpen(false)} className="ml-3 text-white/40 hover:text-white text-[12px]">
+        <FaXmark />
+      </button>
+    </form>
+  ) : (
+    <button 
+      onClick={() => setIsSearchOpen(true)}
+      className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center"
+    >
+      Search <FaMagnifyingGlass className="ml-3 opacity-60" />
+    </button>
+  )}
+</div>
+{/* SEARCH LOGIC END */}
             
             <div className="w-px h-4 bg-white/20 hidden lg:block"></div>
 
-            {/* Desktop Auth Section */}
             {!authLoading && (
               user ? (
                 <Link href="/profile" className="text-[#B08038] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center gap-2">
