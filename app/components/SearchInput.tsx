@@ -76,7 +76,7 @@ export default function SearchInput() {
             type="text"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            placeholder="SEARCH WALLPAPERS..."
+            placeholder="SEARCH PRODUCTS..."
             className="bg-transparent text-white text-xs md:text-sm outline-none w-full tracking-[0.3em] uppercase placeholder:text-white/20 pr-10"
           />
 
