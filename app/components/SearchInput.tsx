@@ -44,12 +44,16 @@ export default function SearchInput() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        alert(`Massive success! Image saved to Supabase with ID: ${data.uploadedImage?.id}`);
+        // Updated Alert: No more mention of mock images
+        alert(`Image successfully saved to the database! (Visual search will activate once AI math is connected)`);
         
-        // Redirect the page to show the 4 matching items
-        if (data.results) {
+        if (data.results && data.results.length > 0) {
+          // This will safely sit here waiting for tomorrow's real results!
           const matchedIds = data.results.map((item: any) => item.id).join(',');
           router.push(`/search?matches=${matchedIds}`);
+        } else {
+          // Safely clears the screen so you don't see old mockups
+          router.push(`/search?matches=pending`);
         }
       } else {
         alert("Failed to process image: " + (data.error || "Unknown error"));
@@ -61,7 +65,7 @@ export default function SearchInput() {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
-  }; // <-- This was the missing bracket that broke your UI!
+  };
 
   return (
     <div className="w-full max-w-3xl mb-12">
