@@ -195,32 +195,12 @@ export default function Navbar() {
           <div className="absolute right-0 lg:right-8 flex items-center space-x-6">
             {/* SEARCH LOGIC START */}
 <div className="relative flex items-center">
-  {isSearchOpen ? (
-    <form 
-      onSubmit={handleSearchSubmit} 
-      // I added 'absolute right-0 bg-black' here so it covers the existing buttons instead of squishing them
-      className="absolute right-0 flex items-center bg-black/90 backdrop-blur-md border border-white/20 rounded-sm px-3 py-1.5 animate-in fade-in slide-in-from-right-4 duration-300 z-50"
-    >
-      <input
-        autoFocus
-        type="text"
-        placeholder="SEARCH WALLPAPERS..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="bg-transparent text-white text-[9px] outline-none w-48 md:w-64 tracking-widest uppercase placeholder:text-white/40"
-      />
-      <button type="button" onClick={() => setIsSearchOpen(false)} className="ml-3 text-white/40 hover:text-white text-[12px]">
-        <FaXmark />
-      </button>
-    </form>
-  ) : (
-    <button 
-      onClick={() => setIsSearchOpen(true)}
-      className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center"
-    >
-      Search <FaMagnifyingGlass className="ml-3 opacity-60" />
-    </button>
-  )}
+  <button 
+    onClick={() => router.push('/search')}
+    className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center"
+  >
+    Search <FaMagnifyingGlass className="ml-3 opacity-60" />
+  </button>
 </div>
 {/* SEARCH LOGIC END */}
             
