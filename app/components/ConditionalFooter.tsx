@@ -7,7 +7,7 @@ export default function ConditionalFooter() {
   const pathname = usePathname();
 
   // Define the exact paths where the footer should be hidden
-  const hiddenPaths = ['/login', '/register','/profile'];
+  const hiddenPaths = ['/login', '/register','/profile','/search'];
 
   // If the current URL is in the hiddenPaths array, return nothing
   if (hiddenPaths.includes(pathname)) {
