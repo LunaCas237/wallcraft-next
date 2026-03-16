@@ -4,9 +4,9 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' next build",
         "start": "next start",
-        "lint": "eslint"
+        "lint": "next lint"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -25,7 +25,11 @@
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+<<<<<<< HEAD
         "@types/uuid": "^10.0.0",
+=======
+
+>>>>>>> 72e3d6c645d5dd0bfb5206fe10bea832baaf06f7
         "autoprefixer": "^10.4.24",
         "eslint": "^9",
         "eslint-config-next": "16.1.6",

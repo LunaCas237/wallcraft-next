@@ -176,6 +176,7 @@ export default function Navbar() {
           <div className="absolute right-0 lg:right-8 flex items-center space-x-6">
             
             {/* SEARCH LOGIC START */}
+<<<<<<< HEAD
             <div className="relative flex items-center">
               <Link 
                 href="/search"
@@ -185,6 +186,17 @@ export default function Navbar() {
               </Link>
             </div>
             {/* SEARCH LOGIC END */}
+=======
+<div className="relative flex items-center">
+  <button 
+    onClick={() => router.push('/search')}
+    className="text-[#c2bfb6] hover:text-white transition text-[9px] tracking-widest uppercase flex items-center"
+  >
+    Search <FaMagnifyingGlass className="ml-3 opacity-60" />
+  </button>
+</div>
+{/* SEARCH LOGIC END */}
+>>>>>>> 72e3d6c645d5dd0bfb5206fe10bea832baaf06f7
             
             <div className="w-px h-4 bg-white/20 hidden lg:block"></div>
 
