@@ -12,7 +12,6 @@ interface Layer {
 interface AnimatedSectionProps {
   children: React.ReactNode;
   className?: string;
-  animation?: "fade-in-up" | "fade-in-right" | "fade-in-left";
   delay?: number;
 }
 
@@ -49,34 +48,27 @@ const Separator = () => (
   </div>
 );
 
-const AnimatedSection = ({ 
-    children, 
-    className = "", 
-    animation = "fade-in-up", 
-    delay = 0 
-}: AnimatedSectionProps) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
+const AnimatedSection = ({ children, className = "", delay = 0 }: AnimatedSectionProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) setIsVisible(true);
-        }, { threshold: 0.1 });
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, { threshold: 0.1 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
 
-    const animClasses = isVisible ? {
-        'fade-in-right': 'animate-fade-in-right opacity-100',
-        'fade-in-left': 'animate-fade-in-left opacity-100',
-        'fade-in-up': 'animate-fade-in-up opacity-100'
-    }[animation] : 'opacity-0 translate-y-8';
-
-    return (
-        <div ref={ref} className={`${className} transition-all duration-1000 ${animClasses}`} style={{ transitionDelay: `${delay}ms` }}>
-            {children}
-        </div>
-    );
+  return (
+    <div 
+      ref={ref} 
+      className={`${className} transition-all duration-1000 ${isVisible ? 'animate-pop-in opacity-100' : 'animate-pop-out opacity-0'}`} 
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
 };
 
 const CollectionSection = ({ 
@@ -92,29 +84,30 @@ const CollectionSection = ({
   link: string, 
   reverse?: boolean 
 }) => {
-  // Split title to separate Main Title and "Collection"
   const titleParts = title.split(' ');
   const mainTitle = titleParts.slice(0, -1).join(' ');
   const subTitle = titleParts[titleParts.length - 1];
 
   return (
     <section className={`relative z-10 flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} min-h-[70vh] items-center py-20 border-t border-white/5 overflow-hidden`}>
-      <div className={`w-full lg:w-[50%] flex flex-col justify-center px-8 md:px-16 lg:px-24`}>
-        <div className="max-w-lg mx-auto lg:mx-0">
-          <Separator />
-          <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8" style={{ color: '#B08038' }}>
-            {mainTitle} <span className="text-[#c2bfb6]"><br />{subTitle}</span>
-          </h2>
-          <p className="text-[10px] md:text-sm font-light leading-relaxed max-w-md mb-10 text-[#c2bfb6]">
-            {desc}
-          </p>
-          <a href={link} className="inline-block border px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:bg-[#c2bfb6] hover:text-black" style={{ color: '#c2bfb6', borderColor: 'rgba(194, 191, 182, 0.4)' }}>
-            Learn More
-          </a>
-        </div>
+      <div className={`w-full lg:w-[50%] flex flex-col justify-center px-8 md:px-16 lg:px-24 mb-10 lg:mb-0`}>
+        <AnimatedSection>
+          <div className="max-w-lg mx-auto lg:mx-0">
+            <Separator />
+            <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8 text-[#B08038]">
+              {mainTitle} <span className="text-[#c2bfb6]"><br />{subTitle}</span>
+            </h2>
+            <p className="text-[10px] md:text-sm font-light leading-relaxed max-w-md mb-10 text-[#c2bfb6]">
+              {desc}
+            </p>
+            <a href={link} className="inline-block border px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:bg-white hover:text-black text-[#c2bfb6] border-white/20">
+              Learn More
+            </a>
+          </div>
+        </AnimatedSection>
       </div>
       <div className="w-full lg:w-[50%] px-8">
-        <AnimatedSection animation={reverse ? "fade-in-left" : "fade-in-right"}>
+        <AnimatedSection delay={200}>
           <img src={img} className="w-full max-h-[500px] object-contain drop-shadow-2xl" alt={title} />
         </AnimatedSection>
       </div>
@@ -152,37 +145,21 @@ export default function App() {
 
   const getLayerStyle = (index: number) => {
     const isMobile = windowWidth < 768;
-    // Spacing mapping identical to HTML
     const spacing = isStacked ? (isMobile ? 12 : 25) : (isMobile ? 65 : 180);
 
     if (activeLayerIndex !== null) {
       if (index === activeLayerIndex) {
         return {
-          opacity: 1,
-          zIndex: 100,
+          opacity: 1, zIndex: 100,
           transform: `translateY(${isMobile ? -40 : 0}px) scale(1.05)`,
-          className: 'active-layer',
-          pointerEvents: 'auto' as const
+          className: 'active-layer', pointerEvents: 'auto' as const
         };
       } else {
-        return {
-          opacity: 0,
-          zIndex: 0,
-          transform: 'translateY(50px) scale(0.8)',
-          className: '',
-          pointerEvents: 'none' as const
-        };
+        return { opacity: 0, zIndex: 0, transform: 'translateY(50px) scale(0.8)', className: '', pointerEvents: 'none' as const };
       }
     }
-
     const finalY = isStacked ? index * spacing : (index * spacing) - ((LAYERS_DATA.length - 1) * spacing / 2);
-    return {
-      opacity: 1,
-      zIndex: LAYERS_DATA.length - index,
-      transform: `translateY(${finalY}px)`,
-      className: '',
-      pointerEvents: 'auto' as const
-    };
+    return { opacity: 1, zIndex: LAYERS_DATA.length - index, transform: `translateY(${finalY}px)`, className: '', pointerEvents: 'auto' as const };
   };
 
   const toggleLayer = (index: number) => {
@@ -194,60 +171,38 @@ export default function App() {
     <div className="bg-black text-[#c2bfb6] font-sans overflow-x-hidden selection:bg-orange-500 selection:text-white">
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+        
         body { font-family: 'Prompt', sans-serif; background-color: #000; }
         
-        .layer-wrapper { 
-            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); 
-            will-change: transform, opacity; 
-            position: absolute;
-            width: 100%;
+        /* --- Smooth Pop Animations --- */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(15px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
-        
-        .layer-inner-card {
-            transform: rotateX(50deg) rotateZ(-15deg);
-            transition: all 0.5s ease;
+        @keyframes popOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.95); }
         }
-        
-        .active-layer .layer-inner-card {
-            transform: rotateX(0deg) rotateZ(0deg);
-            filter: drop-shadow(0 0 30px rgba(176, 128, 56, 0.5));
-        }
+        .animate-pop-in { animation: popIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .animate-pop-out { animation: popOut 0.5s ease-out forwards; }
 
+        /* --- Hero Fade Animations (Original) --- */
         @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; }
         @keyframes fadeInRight { 0% { opacity: 0; transform: translateX(60px); } 100% { opacity: 1; transform: translateX(0); } }
         .animate-fade-in-right { animation: fadeInRight 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-        @keyframes fadeInLeft { 0% { opacity: 0; transform: translateX(-60px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-fade-in-left { animation: fadeInLeft 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .layer-wrapper { transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform, opacity; position: absolute; width: 100%; }
+        .layer-inner-card { transform: rotateX(50deg) rotateZ(-15deg); transition: all 0.5s ease; }
+        .active-layer .layer-inner-card { transform: rotateX(0deg) rotateZ(0deg); filter: drop-shadow(0 0 30px rgba(176, 128, 56, 0.5)); }
         .headline-gold { color: #B08038; }
-        .btn-explore {
-            border: 1px solid rgba(176, 128, 56, 0.5);
-            padding: 12px 32px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.25em;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-        }
-        .btn-explore:hover {
-            background: #B08038;
-            box-shadow: 0 0 25px rgba(176, 128, 56, 0.4);
-        }
+        .btn-explore { border: 1px solid rgba(176, 128, 56, 0.5); padding: 12px 32px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: #fff; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); transition: all 0.4s ease; cursor: pointer; }
+        .btn-explore:hover { background: #B08038; box-shadow: 0 0 25px rgba(176, 128, 56, 0.4); }
       `}} />
 
       {/* --- GLOBAL BACKGROUND --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
-          style={{ 
-            backgroundImage: "url('https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20126@2x.webp')" 
-          }}
-        />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed" style={{ backgroundImage: "url('https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20126@2x.webp')" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/40 to-black/20" />
       </div>
 
@@ -472,16 +427,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* --- INSTALLATION PROCESS SECTION --- */}
-      <section className="relative z-10 py-24 border-t border-white/5">
-        <div className="container mx-auto max-w-[1600px] px-6">
+      {/* --- ENHANCED INSTALLATION PROCESS GUIDE --- */}
+      <section className="relative z-10 py-32 border-t border-white/5 bg-black/20">
+        <div className="container mx-auto max-w-[1800px] px-8 lg:px-12">
             <div className="text-center mb-24">
-                <Separator />
-                <span className="text-[30px] font-bold mb-4 block text-[#c2bfb6]">Process Guide</span>
-                <h2 className="text-3xl md:text-4xl font-light text-white leading-tight uppercase mb-8">Installation Process</h2>
+                <AnimatedSection>
+                    <Separator />
+                    <span className="text-[24px] md:text-[30px] font-bold mb-4 block text-[#c2bfb6] tracking-wider">Process Guide</span>
+                    <h2 className="text-4xl md:text-6xl font-light text-white leading-tight uppercase tracking-tight">Installation Process</h2>
+                </AnimatedSection>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6">
+            {/* Centered 6-column grid to fill the gap and look bigger */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-x-8 gap-y-16">
                 {[
                     { img: '146', title: 'ป้องกันคราบสกปรก', desc: 'ผิววัสดุช่วยลดการยึดเกาะ ของคราบ ทำให้ผนังดูสะอาด อยู่เสมอ' },
                     { img: '144', title: 'วัสดุไม่เป็นเชื้อเพลิง (Class B)', desc: 'ผ่านมาตรฐานความปลอดภัย จากการติดไฟ ลดความเสี่ยงจาก อัคคีภัย' },
@@ -490,15 +448,24 @@ export default function App() {
                     { img: '142', title: 'ผิวสัมผัสนุ่ม', desc: 'มอบความรู้สึกสบาย ปลอดภัย ต่อผู้ใช้งาน โดยเฉพาะในพื้นที่ ที่มีเด็กหรือผู้สูงอายุ' },
                     { img: '145', title: 'ทำความสะอาดง่าย', desc: 'สามารถเช็ดล้างได้สะดวก ประหยัดเวลาและค่าใช้จ่าย ในการดูแลรักษา' }
                 ].map((item, idx) => (
-                    <div key={idx} className="group flex flex-col items-center">
-                        <div className="aspect-[3/4] overflow-hidden border border-white/10 mb-6 relative w-full rounded-sm">
-                            <img src={`https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20${item.img}@2x.webp`} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt={item.title} />
+                    <AnimatedSection key={idx} delay={idx * 100} className="flex flex-col items-center group">
+                        {/* Larger aspect ratio and hover effects */}
+                        <div className="aspect-[3/4] w-full overflow-hidden border border-white/10 mb-8 relative rounded-sm shadow-2xl">
+                            <img 
+                                src={`https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/luxe_series/Asset%20${item.img}@2x.webp`} 
+                                className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 brightness-90 group-hover:brightness-100" 
+                                alt={item.title} 
+                            />
                         </div>
-                        <div className="text-center">
-                            <h3 className="text-sm font-bold uppercase mb-1 text-[#B08038]">{item.title}</h3>
-                            <p className="text-[10px] text-[#c2bfb6] uppercase tracking-wider">{item.desc}</p>
+                        <div className="text-center px-2">
+                            <h3 className="text-lg font-bold uppercase mb-3 text-[#B08038] tracking-wide leading-tight group-hover:text-white transition-colors duration-300">
+                                {item.title}
+                            </h3>
+                            <p className="text-xs md:text-sm text-[#c2bfb6] uppercase tracking-widest leading-relaxed opacity-80">
+                                {item.desc}
+                            </p>
                         </div>
-                    </div>
+                    </AnimatedSection>
                 ))}
             </div>
         </div>
