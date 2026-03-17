@@ -127,13 +127,13 @@ export default function Footer() {
             
             <div className="flex space-x-4">
               <a href="#" className="w-10 h-10 lg:w-8 lg:h-8 rounded-full bg-white/5 flex items-center justify-center text-[#c2bfb6] hover:bg-[#B08038] hover:text-white transition-all">
-                <FaFacebookF className="text-[24px] lg:text-[16px]" />
+                <FaFacebookF className="text-[28px] lg:text-[16px]" />
               </a>
               <a href="#" className="w-10 h-10 lg:w-8 lg:h-8 rounded-full bg-white/5 flex items-center justify-center text-[#c2bfb6] hover:bg-[#B08038] hover:text-white transition-all">
-                <FaInstagram className="text-[24px] lg:text-[16px]" />
+                <FaInstagram className="text-[28px] lg:text-[16px]" />
               </a>
               <a href="#" className="w-10 h-10 lg:w-8 lg:h-8 rounded-full bg-white/5 flex items-center justify-center text-[#c2bfb6] hover:bg-[#B08038] hover:text-white transition-all">
-                <FaLine className="text-[24px] lg:text-[16px]" />
+                <FaLine className="text-[28px] lg:text-[16px]" />
               </a>
             </div>
           </div>
