@@ -230,7 +230,7 @@ export default function SearchPage() {
             <section className="relative pt-24 pb-12 px-6">
                 <div className="max-w-[1800px] mx-auto text-center">
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tighter uppercase text-[#B08038] mb-6 font-['Prompt']">
-                        Product Gallery
+                        Search Archive
                     </h1>
                     <p className="text-[#c2bfb6] font-['Prompt'] max-w-2xl mx-auto mb-12 text-sm md:text-base opacity-80">
                         ค้นหาแรงบันดาลใจสำหรับผนังของคุณด้วยระบบค้นหาอัจฉริยะ 
