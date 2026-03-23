@@ -287,6 +287,7 @@ export default function FabricCollection() {
                         <button type="button" className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-white/40 flex items-center justify-center text-white/70 hover:border-[#B08038] hover:text-[#B08038] transition-colors" onClick={() => scrollSlider(sliderId, -200)}>
                           <FaChevronLeft className="text-[10px] lg:text-[12px]" />
                         </button>
+                        
                         <div ref={(el) => { sliderRefs.current[sliderId] = el; }} onMouseDown={(e) => handleMouseDown(sliderId, e)} className={`flex gap-4 lg:gap-5 overflow-x-auto no-scrollbar w-[240px] lg:w-[400px] snap-x cursor-grab py-2 select-none ${draggingSliderId === sliderId ? 'grabbing' : ''}`}>
                           {group.variants.map((variant) => (
                             <button key={variant.id} type="button" onClick={() => openProductModal(variant)} className="flex-none w-[70px] lg:w-[100px] aspect-square opacity-90 hover:opacity-100 transition-all snap-center border border-white/10 hover:border-[#B08038] overflow-hidden">

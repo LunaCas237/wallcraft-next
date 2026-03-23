@@ -86,28 +86,36 @@ const CollectionSection = ({
   link: string, 
   reverse?: boolean 
 }) => {
+  {/* Collection Data Section */}
   return (
-    <section className={`relative z-10 flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} min-h-[70vh] items-center py-20 border-t border-white/5 overflow-hidden`}>
-      <div className={`w-full lg:w-[50%] flex flex-col justify-center px-8 md:px-16 lg:px-24 mb-10 lg:mb-0`}>
-        <AnimatedSection>
-          <div className="max-w-lg mx-auto lg:mx-0">
-            <Separator />
-            <h2 className="text-4xl md:text-6xl font-light leading-tight mt-6 mb-8 text-[#B08038]">
-              {title}<br /><span className="text-[#c2bfb6]">{highlight}</span>
-            </h2>
-            <p className="text-[10px] md:text-sm font-light leading-relaxed max-w-md mb-10 text-[#c2bfb6]">
-              {desc}
-            </p>
-            <a href={link} className="inline-block border border-white/20 px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#c2bfb6] hover:bg-white hover:text-black transition-all">
-              Learn More
-            </a>
-          </div>
-        </AnimatedSection>
-      </div>
-      <div className="w-full lg:w-[50%] px-8">
-        <AnimatedSection delay={200}>
-          <img src={img} className="w-full max-h-[500px] object-contain drop-shadow-2xl" alt={title} />
-        </AnimatedSection>
+    <section className="relative z-10 py-20 border-t border-white/5 overflow-hidden">
+      {/* ปรับแก้ container ให้ดันรูปและข้อความออกจากกัน (justify-between) เฉพาะส่วน reverse */}
+      <div className={`container mx-auto max-w-[1200px] px-6 lg:px-8 flex flex-col ${reverse ? 'lg:flex-row-reverse lg:justify-between' : 'lg:flex-row lg:justify-center lg:gap-16'} items-center gap-12 min-h-[60vh]`}>
+        
+        {/* ลดความกว้างกล่องข้อความลงเป็น 4/12 เฉพาะส่วน reverse เพื่อเปิดพื้นที่ทำ gap ตรงกลางให้มากขึ้น */}
+        <div className={`w-full ${reverse ? 'lg:w-4/12' : 'lg:w-5/12'} flex flex-col`}>
+          <AnimatedSection>
+            <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
+              <Separator />
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight mt-6 mb-8 text-[#B08038]">
+                {title}<br /><span className="text-[#c2bfb6]">{highlight}</span>
+              </h2>
+              <p className="text-[10px] md:text-sm font-light leading-relaxed max-w-md mx-auto lg:mx-0 mb-10 text-[#c2bfb6]">
+                {desc}
+              </p>
+              <a href={link} className="inline-block border border-white/20 px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#c2bfb6] hover:bg-white hover:text-black transition-all">
+                Learn More
+              </a>
+            </div>
+          </AnimatedSection>
+        </div>
+
+        {/* ใส่ shrink-0 ไว้ที่รูปภาพ เพื่อการันตีว่ารูปจะไม่ถูกบีบให้เล็กลงเมื่อมี gap เพิ่มขึ้น */}
+        <div className="w-full lg:w-1/2 shrink-0">
+          <AnimatedSection delay={200}>
+            <img src={img} className="w-full max-h-[500px] object-contain drop-shadow-2xl" alt={title} />
+          </AnimatedSection>
+        </div>
       </div>
     </section>
   );
@@ -117,7 +125,7 @@ export default function App() {
   const [isStacked, setIsStacked] = useState(true);
   const [activeLayerIndex, setActiveLayerIndex] = useState<number | null>(null);
   const stackContainerRef = useRef<HTMLDivElement>(null);
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(1200);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

@@ -78,14 +78,14 @@ const APP_ICONS = [
 ];
 
 const COLLECTIONS_DATA = [
-  { title: "Tarra Stone", link: "/collections/craft-stone-collection/tarra-stone", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2092@2x.webp", reverse: false },
-  { title: "Panorama", link: "/collections/craft-stone-collection/panorama", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2093@2x.webp", reverse: true },
-  { title: "Strength Rock", link: "/collections/craft-stone-collection/strength-rock", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2094@2x.webp", reverse: false },
-  { title: "Geoform", link: "/collections/craft-stone-collection/geoform", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2095@2x.webp", reverse: true },
-  { title: "Urban Form", link: "/collections/craft-stone-collection/urban-form", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2096@2x.webp", reverse: false },
-  { title: "Nature Grain", link: "/collections/craft-stone-collection/nature-grain", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2097@2x.webp", reverse: true },
-  { title: "Rust", link: "/collections/craft-stone-collection/rust", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2098@2x.webp", reverse: false },
-  { title: "Finesse", link: "/collections/craft-stone-collection/finesse", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2099@2x.webp", reverse: true },
+  { title: "Tarra Stone", link: "/collections/tarra-stone", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2092@2x.webp", reverse: false },
+  { title: "Panorama", link: "/collections/panorama", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2093@2x.webp", reverse: true },
+  { title: "Strength Rock", link: "/collections/strength-rock", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2094@2x.webp", reverse: false },
+  { title: "Geoform", link: "/collections/geoform", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2095@2x.webp", reverse: true },
+  { title: "Urban Form", link: "/collections/urban-form", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2096@2x.webp", reverse: false },
+  { title: "Nature Grain", link: "/collections/nature-grain", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2097@2x.webp", reverse: true },
+  { title: "Rust", link: "/collections/rust", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2098@2x.webp", reverse: false },
+  { title: "Finesse", link: "/collections/finesse", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2099@2x.webp", reverse: true },
 ];
 
 const Separator = () => (
@@ -264,7 +264,6 @@ export default function App() {
                     </div>
                 </header>
 
-
                 {/* --- Structure Detail (Pop Animation) --- */}
                 <section id="technology" className="py-24 flex flex-col items-center relative z-10">
                     <div className="text-center mb-16 px-6">
@@ -320,20 +319,23 @@ export default function App() {
                 {/* --- Collections --- */}
                 <div className="space-y-0">
                     {COLLECTIONS_DATA.map((col, idx) => (
-                        <section key={idx} className={`flex flex-col ${col.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} min-h-[70vh] items-center border-t border-white/5 py-16`}>
-                            <div className="w-full lg:w-1/2 px-8 md:px-24">
-                                <AnimatedSection>
-                                    <Separator />
-                                    <h2 className="text-4xl md:text-6xl font-light mt-6 mb-8 text-[#B08038]">
-                                        {col.title} <span className="text-[#c2bfb6] block text-4xl uppercase">Collection</span>
-                                    </h2>
-                                    <a href={col.link} className="inline-block border border-white/20 px-8 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">View Collection</a>
-                                </AnimatedSection>
-                            </div>
-                            <div className="w-full lg:w-1/2 px-8">
-                                <AnimatedSection delay={200}>
-                                    <img src={col.image} className="w-full max-h-[500px] object-contain" alt={col.title} />
-                                </AnimatedSection>
+                        <section key={idx} className="border-t border-white/5 py-16 lg:py-24">
+                            {/* Adjusted the width of children. Text is w-5/12 and image is w-1/2 to keep it large, using justify-between for the gap */}
+                            <div className={`container mx-auto max-w-[1200px] px-6 lg:px-12 flex flex-col ${col.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center lg:justify-between gap-12 lg:gap-0`}>
+                                <div className="w-full lg:w-5/12 flex flex-col items-start">
+                                    <AnimatedSection>
+                                        <Separator />
+                                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-light mt-6 mb-8 text-[#B08038]">
+                                            {col.title} <span className="text-[#c2bfb6] block text-3xl md:text-4xl uppercase mt-2">Collection</span>
+                                        </h2>
+                                        <a href={col.link} className="inline-block border border-white/20 px-8 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">View Collection</a>
+                                    </AnimatedSection>
+                                </div>
+                                <div className="w-full lg:w-1/2">
+                                    <AnimatedSection delay={200}>
+                                        <img src={col.image} className="w-full max-h-[500px] object-contain" alt={col.title} />
+                                    </AnimatedSection>
+                                </div>
                             </div>
                         </section>
                     ))}
