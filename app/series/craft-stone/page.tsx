@@ -78,14 +78,14 @@ const APP_ICONS = [
 ];
 
 const COLLECTIONS_DATA = [
-  { title: "Tarra Stone", link: "/collections/tarra-stone", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2092@2x.webp", reverse: false },
-  { title: "Panorama", link: "/collections/panorama", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2093@2x.webp", reverse: true },
-  { title: "Strength Rock", link: "/collections/strength-rock", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2094@2x.webp", reverse: false },
-  { title: "Geoform", link: "/collections/geoform", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2095@2x.webp", reverse: true },
-  { title: "Urban Form", link: "/collections/urban-form", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2096@2x.webp", reverse: false },
-  { title: "Nature Grain", link: "/collections/nature-grain", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2097@2x.webp", reverse: true },
-  { title: "Rust", link: "/collections/rust", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2098@2x.webp", reverse: false },
-  { title: "Finesse", link: "/collections/finesse", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2099@2x.webp", reverse: true },
+  { title: "Tarra Stone", link: "/collections/craft-stone-collection/tarra-stone", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2092@2x.webp", reverse: false },
+  { title: "Panorama", link: "/collections/craft-stone-collection/panorama", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2093@2x.webp", reverse: true },
+  { title: "Strength Rock", link: "/collections/craft-stone-collection/strength-rock", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2094@2x.webp", reverse: false },
+  { title: "Geoform", link: "/collections/craft-stone-collection/geoform", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2095@2x.webp", reverse: true },
+  { title: "Urban Form", link: "/collections/craft-stone-collection/urban-form", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2096@2x.webp", reverse: false },
+  { title: "Nature Grain", link: "/collections/craft-stone-collection/nature-grain", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2097@2x.webp", reverse: true },
+  { title: "Rust", link: "/collections/craft-stone-collection/rust", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2098@2x.webp", reverse: false },
+  { title: "Finesse", link: "/collections/craft-stone-collection/finesse", image: "https://raw.githubusercontent.com/WaiHmueThit23/wallcraft_assets/main/craft_stone/Asset%2099@2x.webp", reverse: true },
 ];
 
 const Separator = () => (
