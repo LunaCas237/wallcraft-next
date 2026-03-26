@@ -8,6 +8,7 @@ import "./globals.css";
 
 import ConditionalNavbar from "./components/Navbar";
 import ConditionalFooter from "./components/ConditionalFooter";
+import AIchatbot from "./components/AIchatbot";
 
 const prompt = Prompt({
   subsets: ["thai", "latin"],
@@ -45,6 +46,9 @@ export default function RootLayout({
 
         {/* ส่วนท้าย (จะซ่อนอัตโนมัติในหน้า login/register) */}
         <ConditionalFooter />
+        
+        {/* 👉 2. Put the Chatbot right before the closing body tag!*/} 
+        <AIchatbot />
         
       </body>
     </html>
