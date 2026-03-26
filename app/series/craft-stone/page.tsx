@@ -264,6 +264,7 @@ export default function App() {
                     </div>
                 </header>
 
+
                 {/* --- Structure Detail (Pop Animation) --- */}
                 <section id="technology" className="py-24 flex flex-col items-center relative z-10">
                     <div className="text-center mb-16 px-6">
@@ -309,9 +310,9 @@ export default function App() {
                         {isStacked ? 'Explore Layers' : 'Stack Layers'}
                     </button>
                     
-                    <div className="grid grid-cols-4 md:grid-cols-7 gap-8 mt-24 px-6">
+                    <div className="grid grid-cols-4 md:grid-cols-7 gap-10 mt-36 px-6">
                         {TECH_ICONS_DATA.map((src, i) => (
-                            <img key={i} src={src} className="w-20 md:w-32 opacity-80 hover:scale-110 transition-transform" alt="Icon" />
+                            <img key={i} src={src} className="w-42 md:w-50 opacity-80 hover:scale-110 transition-transform" alt="Icon" />
                         ))}
                     </div>
                 </section>
@@ -322,7 +323,7 @@ export default function App() {
                         <section key={idx} className="border-t border-white/5 py-16 lg:py-24">
                             {/* Adjusted the width of children. Text is w-5/12 and image is w-1/2 to keep it large, using justify-between for the gap */}
                             <div className={`container mx-auto max-w-[1200px] px-6 lg:px-12 flex flex-col ${col.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center lg:justify-between gap-12 lg:gap-0`}>
-                                <div className="w-full lg:w-5/12 flex flex-col items-start">
+                                <div className="w-full lg:w-4/12 flex flex-col items-start">
                                     <AnimatedSection>
                                         <Separator />
                                         <h2 className="text-4xl md:text-5xl lg:text-6xl font-light mt-6 mb-8 text-[#B08038]">

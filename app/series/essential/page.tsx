@@ -289,6 +289,21 @@ export default function App() {
         <button onClick={() => toggleLayer(activeLayerIndex !== null ? activeLayerIndex : 0)} className="btn-explore mt-12">
           {isStacked ? 'Explore Layers' : 'Stack Layers'}
         </button>
+        
+        {/* Tech Icons */}
+        <div className="w-full max-w-[1600px] mx-auto mt-24 md:mt-32 px-6 relative z-20">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-6 sm:gap-10 items-center justify-items-center opacity-80">
+            {TECH_ICONS_DATA.map((src, i) => (
+              <div key={i} className="w-full max-w-[120px] md:max-w-[180px] aspect-square flex items-center justify-center p-2">
+                <img 
+                  src={src} 
+                  className="w-full h-full object-contain opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-110" 
+                  alt="Icon" 
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* --- COLLECTION SECTIONS (Now with CraftStone Style Pop) --- */}
