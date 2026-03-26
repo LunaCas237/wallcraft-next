@@ -56,14 +56,14 @@ export default function Footer() {
                  </button>
                  {/* Links - Set to 12px */}
                  <div className={`${openSeries.craft ? 'flex' : 'hidden'} lg:flex flex-col space-y-3 pb-2 lg:pb-0`}>
-                    <Link href="/collections/tarra-stone" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Tarra Stone</Link>
-                    <Link href="/collections/panorama" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Panorama</Link>
-                    <Link href="/collections/strength-rock" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Strength Rock</Link>
-                    <Link href="/collections/geo-form" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Geoform</Link>
-                    <Link href="/collections/urban-form" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Urban Form</Link>
-                    <Link href="/collections/nature-grain" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Nature Grain</Link>
-                    <Link href="/collections/rust" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Rust</Link>
-                    <Link href="/collections/finesse" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Finesse</Link>
+                    <Link href="/collections/craft-stone-collection/tarra-stone" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Tarra Stone</Link>
+                    <Link href="/collections/craft-stone-collection/panorama" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Panorama</Link>
+                    <Link href="/collections/craft-stone-collection/strength-rock" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Strength Rock</Link>
+                    <Link href="/collections/craft-stone-collection/geo-form" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Geoform</Link>
+                    <Link href="/collections/craft-stone-collection/urban-form" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Urban Form</Link>
+                    <Link href="/collections/craft-stone-collection/nature-grain" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Nature Grain</Link>
+                    <Link href="/collections/craft-stone-collection/rust" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Rust</Link>
+                    <Link href="/collections/craft-stone-collection/finesse" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Finesse</Link>
                   </div>
                </div>
 
@@ -78,14 +78,14 @@ export default function Footer() {
                  </button>
                  {/* Links - Set to 12px */}
                  <div className={`${openSeries.luxe ? 'flex' : 'hidden'} lg:flex flex-col space-y-3 pb-2 lg:pb-0`}>
-                   <Link href="/collections/fabric" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Fabric</Link>
-                   <Link href="/collections/leather" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Leather</Link>
-                   <Link href="/collections/metallic" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Metallic</Link>
-                   <Link href="/collections/semi-outdoor" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Semi Outdoor</Link>
-                   <Link href="/collections/signature" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Signature</Link>
-                   <Link href="/collections/stone" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Stone</Link>
-                   <Link href="/collections/velvet" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Velvet</Link>
-                   <Link href="/collections/wood" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Wood</Link>
+                   <Link href="/collections/luxe-collection/fabric" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Fabric</Link>
+                   <Link href="/collections/luxe-collection/leather" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Leather</Link>
+                   <Link href="/collections/luxe-collection/metallic" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Metallic</Link>
+                   <Link href="/collections/luxe-collection/semi-outdoor" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Semi Outdoor</Link>
+                   <Link href="/collections/luxe-collection/signature" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Signature</Link>
+                   <Link href="/collections/luxe-collection/stone" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Stone</Link>
+                   <Link href="/collections/luxe-collection/velvet" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Velvet</Link>
+                   <Link href="/collections/luxe-collection/wood" className="text-[10px] uppercase tracking-[0.2em] text-[#c2bfb6] hover:text-white transition-colors">Wood</Link>
                  </div>
                </div>
 
