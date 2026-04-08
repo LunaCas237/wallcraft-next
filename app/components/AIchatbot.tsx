@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
+import { ImageIcon, Mic, Send, Settings, Sparkles, X, MessageCircle, Languages } from 'lucide-react';
 
 interface Product {
     sku: string;
@@ -19,44 +20,49 @@ interface Message {
 
 export default function AIchatbot() {
     const [isOpen, setIsOpen] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [language, setLanguage] = useState<'th' | 'en'>('th'); // Language State
+    
     const [messages, setMessages] = useState<Message[]>([
-        { role: 'ai', content: 'สวัสดีครับ! ผมคือผู้เชี่ยวชาญจาก Wallcraft พิมพ์สอบถามหรือส่งรูปไอเดียแต่งบ้านที่ชอบมาได้เลยครับ' }
+        { 
+            role: 'ai', 
+            content: language === 'th' 
+                ? 'สวัสดีครับ! ผมคือผู้เชี่ยวชาญจาก Wallcraft พิมพ์สอบถามได้เลยครับ' 
+                : 'Hello! I am your Wallcraft expert. How can I help you today?' 
+        }
     ]);
     
-    // 🛠️ FIX: Added missing 'input' state
-    const [input, setInput] = useState(""); 
+    const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
-    
     const fileInputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to bottom
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages, loading, isOpen]);
 
-    // 🛠️ FIX: Updated handleSend to handle both Text and Files
     const handleSend = async (file?: File) => {
-        // Prevent sending if both input and file are empty
         if (!input.trim() && !file) return;
 
-        const userMsg: Message = { 
-            role: 'user', 
-            content: input || "ค้นหาด้วยรูปภาพ...", 
-            image: file ? URL.createObjectURL(file) : undefined 
+        const userMsg: Message = {
+            role: 'user',
+            content: input || (language === 'th' ? "ค้นหาด้วยรูปภาพ..." : "Searching with image..."),
+            image: file ? URL.createObjectURL(file) : undefined
         };
-        
+
         setMessages(prev => [...prev, userMsg]);
         setLoading(true);
-        
-        const currentText = input; // Save text before clearing
-        setInput(""); // Clear text bar
+        const currentText = input;
+        setInput("");
 
         const formData = new FormData();
         if (file) formData.append('image', file);
         if (currentText) formData.append('message', currentText);
+        
+        // --- IMPORTANT: Pass language to your API ---
+        formData.append('lang', language); 
 
         try {
             const res = await fetch('/api/ai-assistant', { method: 'POST', body: formData });
@@ -64,12 +70,15 @@ export default function AIchatbot() {
 
             const aiMsg: Message = {
                 role: 'ai',
-                content: data.ai_analysis || "นี่คือข้อมูลที่ผมพบครับ:",
+                content: data.ai_analysis || (language === 'th' ? "นี่คือข้อมูลที่พบครับ" : "Here is what I found:"),
                 products: data.products || []
             };
             setMessages(prev => [...prev, aiMsg]);
         } catch (err) {
-            setMessages(prev => [...prev, { role: 'ai', content: 'ขออภัยครับ ระบบประมวลผลขัดข้อง ลองใหม่อีกครั้งนะครับ' }]);
+            setMessages(prev => [...prev, { 
+                role: 'ai', 
+                content: language === 'th' ? 'เกิดข้อผิดพลาด ลองใหม่อีกครั้ง' : 'Error occurred, please try again.' 
+            }]);
         } finally {
             setLoading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -78,91 +87,97 @@ export default function AIchatbot() {
 
     return (
         <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end font-sans">
-            
-            {/* Chat Window */}
             {isOpen && (
-                <div className="mb-4 w-[350px] sm:w-[400px] h-[550px] bg-[#1a1c1e] rounded-2xl shadow-2xl border border-gray-700 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+                <div className="mb-4 w-[350px] sm:w-[420px] h-[600px] bg-[#0f0f0f] rounded-3xl shadow-2xl border border-gray-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
                     
                     {/* Header */}
-                    <div className="bg-gray-900 p-4 flex items-center justify-between border-b border-gray-800">
+                    <header className="relative flex justify-between items-center px-5 py-4 bg-[#161616] border-b border-gray-800">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center shadow-inner">🤖</div>
-                            <span className="font-bold text-white text-sm">Wallcraft AI</span>
+                            <div className="p-2 bg-blue-500/10 rounded-xl">
+                                <Sparkles className="text-blue-400 w-5 h-5" />
+                            </div>
+                            <h1 className="text-sm font-bold text-white tracking-tight">Wallcraft AI</h1>
                         </div>
-                        <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors">✕</button>
-                    </div>
 
-                    {/* Chat Messages */}
-                    <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#121416]">
+                        <div className="flex items-center gap-3">
+                            {/* Language Quick Toggle */}
+                            <button 
+                                onClick={() => setLanguage(language === 'th' ? 'en' : 'th')}
+                                className="flex items-center gap-1 bg-[#262626] px-2 py-1 rounded-lg border border-gray-700 hover:border-blue-500 transition-all"
+                            >
+                                <Languages className="w-3.5 h-3.5 text-blue-400" />
+                                <span className="text-[10px] font-bold text-white uppercase">{language}</span>
+                            </button>
+                            
+                            <Settings 
+                                className={`w-4 h-4 cursor-pointer transition-colors ${showSettings ? 'text-blue-400' : 'text-gray-600 hover:text-white'}`}
+                                onClick={() => setShowSettings(!showSettings)}
+                            />
+                            <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
+                        </div>
+
+                        {/* Dropdown Settings Menu */}
+                        {showSettings && (
+                            <div className="absolute top-16 right-5 w-40 bg-[#1a1a1a] border border-gray-800 rounded-xl shadow-2xl p-2 z-10 animate-in fade-in zoom-in duration-200">
+                                <p className="text-[10px] text-gray-500 px-2 mb-1 uppercase font-bold">Select Language</p>
+                                <button 
+                                    onClick={() => { setLanguage('th'); setShowSettings(false); }}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${language === 'th' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:bg-white/5'}`}
+                                >
+                                    ภาษาไทย (Thai)
+                                </button>
+                                <button 
+                                    onClick={() => { setLanguage('en'); setShowSettings(false); }}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${language === 'en' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:bg-white/5'}`}
+                                >
+                                    English (US)
+                                </button>
+                            </div>
+                        )}
+                    </header>
+
+                    {/* Chat Area */}
+                    <main ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-6 bg-[#0f0f0f] scrollbar-hide">
                         {messages.map((msg, idx) => (
                             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[85%] space-y-2`}>
-                                    <div className={`p-3 rounded-2xl text-sm leading-relaxed ${
-                                        msg.role === 'user' 
-                                        ? 'bg-blue-600 text-white rounded-tr-none' 
-                                        : 'bg-gray-800 text-gray-200 rounded-tl-none border border-gray-700'
-                                    }`}>
-                                        {msg.image && <img src={msg.image} className="rounded-lg mb-2 w-full object-cover" alt="upload" />}
-                                        <p>{msg.content}</p>
-                                    </div>
-
-                                    {/* Products Grid */}
-                                    {msg.products && msg.products.length > 0 && (
-                                        <div className="grid grid-cols-2 gap-2 mt-2">
-                                            {msg.products.map((p, i) => (
-                                                <div key={i} className="bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-sm">
-                                                    <img src={p.variant_image} className="h-20 w-full object-cover" alt={p.name} />
-                                                    <div className="p-2 text-[10px]">
-                                                        <p className="font-bold truncate text-white">{p.name}</p>
-                                                        <p className="text-blue-400 font-bold mt-1">฿{p.price.toLocaleString()}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                <div className={`p-4 rounded-2xl text-sm ${
+                                    msg.role === 'user' ? 'bg-[#262626] text-white rounded-tr-none' : 'bg-[#1a1a1a] text-gray-300 rounded-tl-none border border-gray-800'
+                                }`}>
+                                    {msg.image && <img src={msg.image} className="rounded-xl mb-3 w-full object-cover max-h-48" alt="upload" />}
+                                    <p>{msg.content}</p>
                                 </div>
                             </div>
                         ))}
-                        {loading && <div className="text-[11px] text-gray-500 animate-pulse italic">AI กำลังวิเคราะห์...</div>}
-                    </div>
+                        {loading && <div className="text-[11px] text-gray-500 animate-pulse italic">AI is thinking...</div>}
+                    </main>
 
-                    {/* 🛠️ FIX: New Input Bar Area */}
-                    <div className="p-4 bg-gray-900 border-t border-gray-800">
-                        <div className="flex items-center gap-2">
-                            <button 
-                                onClick={() => fileInputRef.current?.click()}
-                                className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center border border-gray-700 transition-all shadow-md"
-                            >
-                                📷
+                    {/* Input Area */}
+                    <footer className="p-5 bg-[#161616] border-t border-gray-800">
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => fileInputRef.current?.click()} className="p-3 bg-[#262626] rounded-2xl border border-gray-700">
+                                <ImageIcon className="w-5 h-5 text-gray-400" />
                             </button>
-                            <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleSend(e.target.files[0])} className="hidden" accept="image/*" />
-                            
-                            <input 
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                placeholder="ถามเรื่องลายไม้..."
-                                className="flex-1 bg-gray-800 text-white rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 border border-gray-700"
-                            />
-                            
-                            <button 
-                                onClick={() => handleSend()}
-                                className="text-blue-400 font-bold px-2 hover:text-blue-300 disabled:text-gray-600"
-                                disabled={loading}
-                            >
-                                ส่ง
-                            </button>
+                            <div className="relative flex-1">
+                                <input 
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                                    placeholder={language === 'th' ? "ถามเรื่องลายไม้..." : "Ask about wood patterns..."}
+                                    className="w-full bg-[#0a0a0a] text-gray-200 rounded-2xl py-3 px-5 text-sm focus:outline-none border border-gray-800"
+                                />
+                                <button onClick={() => handleSend()} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-blue-500/10 rounded-xl">
+                                    <Send className="w-4 h-4 text-blue-500" />
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                        <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleSend(e.target.files[0])} className="hidden" accept="image/*" />
+                    </footer>
                 </div>
             )}
 
-            {/* Toggle Button */}
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className={`w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 ${isOpen ? 'bg-gray-800' : 'bg-amber-400'}`}
-            >
-                {isOpen ? <span className="text-white text-xl">✕</span> : <span className="text-2xl">🤖</span>}
+            {/* Main Toggle */}
+            <button onClick={() => setIsOpen(!isOpen)} className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all bg-blue-500">
+                {isOpen ? <X className="text-white w-6 h-6" /> : <MessageCircle className="text-white w-7 h-7" />}
             </button>
         </div>
     );
