@@ -1,184 +1,480 @@
-"use client";
-import { useState, useRef, useEffect } from 'react';
-import { ImageIcon, Mic, Send, Settings, Sparkles, X, MessageCircle, Languages } from 'lucide-react';
+'use client';
 
-interface Product {
-    sku: string;
-    name: string;
-    color: string;
-    variant_image: string;
-    price: number;
-    similarity: number;
-}
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Bot, User, X, Settings, Loader2, Image as ImageIcon, Sparkles, Circle, Mic, Square, Crop as CropIcon, Check, MessageCircle, Trash2, RefreshCw } from 'lucide-react';
+import Markdown from 'react-markdown';
+import { motion, AnimatePresence } from 'motion/react';
+import ReactCrop, { type Crop, PixelCrop } from 'react-image-crop';
+import { sendMessageStream, type Message } from '../lib/gemini'; 
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-interface Message {
-    role: 'user' | 'ai';
-    content: string;
-    image?: string;
-    products?: Product[];
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
 export default function AIchatbot() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
-    const [language, setLanguage] = useState<'th' | 'en'>('th'); // Language State
-    
-    const [messages, setMessages] = useState<Message[]>([
-        { 
-            role: 'ai', 
-            content: language === 'th' 
-                ? 'สวัสดีครับ! ผมคือผู้เชี่ยวชาญจาก Wallcraft พิมพ์สอบถามได้เลยครับ' 
-                : 'Hello! I am your Wallcraft expert. How can I help you today?' 
-        }
-    ]);
-    
-    const [input, setInput] = useState("");
-    const [loading, setLoading] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const scrollRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [selectedImage, setSelectedImage] = useState<{ data: string; mimeType: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userApiKey, setUserApiKey] = useState('');
+  const [systemPrompt, setSystemPrompt] = useState(`You are the official AI assistant for Wallcraft Thailand (https://www.wallcraftthailand.com/). 
+Your primary language is Thai. 
+For every response, you MUST provide the answer in Thai first, followed by a clear English translation.
+Format your response like this:
+[Thai Response]
+---
+[English Translation]
 
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    }, [messages, loading, isOpen]);
+If the user says "hi" or "hello", you MUST respond exactly with: "hello, welcome to Wallcraft Thailand! I am the official AI assistant for Wallcraft Thailand, ready to provide information about our Custom Digital Print wallpapers and modern premium wallcoverings." followed by the Thai translation.
 
-    const handleSend = async (file?: File) => {
-        if (!input.trim() && !file) return;
+Your expertise is in Wallcraft Thailand's specific product lines, including:
+- Custom Digital Print Wallpapers (วอลเปเปอร์สั่งพิมพ์ระบบดิจิทัล)
+- Premium Wallcoverings and Murals
+- Specialized materials like Canvas, Leather, and Fabric textures
+- Professional installation services and interior decoration solutions
 
-        const userMsg: Message = {
-            role: 'user',
-            content: input || (language === 'th' ? "ค้นหาด้วยรูปภาพ..." : "Searching with image..."),
-            image: file ? URL.createObjectURL(file) : undefined
-        };
+Use the information from https://www.wallcraftthailand.com/ to provide detailed and accurate answers about their collections, materials, and pricing models. 
+Keep your responses concise and informative to stay within token limits.
 
-        setMessages(prev => [...prev, userMsg]);
-        setLoading(true);
-        const currentText = input;
-        setInput("");
+When an image is provided:
+1. Provide a VERY DETAILED description of the image content, focusing on textures, colors, lighting, and spatial arrangement.
+2. If a specific area was selected (cropped), focus your analysis primarily on that region.
+3. Suggest suitable Wallcraft wallpaper designs or materials that would complement the scene or match the style in the image.
+4. Explain WHY these suggestions work based on the visual elements identified.
+5. Provide all this information in both Thai and English as per the standard format.`);
+  
+  const [showSettings, setShowSettings] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [imgSrc, setImgSrc] = useState('');
+  const [isCropping, setIsCropping] = useState(false);
+  
+  const imgRef = useRef<HTMLImageElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-        const formData = new FormData();
-        if (file) formData.append('image', file);
-        if (currentText) formData.append('message', currentText);
-        
-        // --- IMPORTANT: Pass language to your API ---
-        formData.append('lang', language); 
+  useEffect(() => {
+    if (isOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isOpen]);
 
-        try {
-            const res = await fetch('/api/ai-assistant', { method: 'POST', body: formData });
-            const data = await res.json();
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
 
-            const aiMsg: Message = {
-                role: 'ai',
-                content: data.ai_analysis || (language === 'th' ? "นี่คือข้อมูลที่พบครับ" : "Here is what I found:"),
-                products: data.products || []
-            };
-            setMessages(prev => [...prev, aiMsg]);
-        } catch (err) {
-            setMessages(prev => [...prev, { 
-                role: 'ai', 
-                content: language === 'th' ? 'เกิดข้อผิดพลาด ลองใหม่อีกครั้ง' : 'Error occurred, please try again.' 
-            }]);
-        } finally {
-            setLoading(false);
-            if (fileInputRef.current) fileInputRef.current.value = '';
-        }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSpeechError('Browser not supported');
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'th-TH';
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput((prev) => prev + (prev ? ' ' : '') + transcript);
+        setIsListening(false);
+      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+      recognitionRef.current = recognition;
+      recognition.start();
+      setIsListening(true);
+    } catch (err) {
+      setIsListening(false);
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImgSrc(reader.result as string);
+      setIsCropping(true);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleCropComplete = async () => {
+    if (!imgRef.current || !completedCrop) {
+      const data = imgSrc.split(',')[1];
+      const mimeType = imgSrc.split(';')[0].split(':')[1];
+      setSelectedImage({ data, mimeType });
+      setIsCropping(false);
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const image = imgRef.current;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = completedCrop.width;
+    canvas.height = completedCrop.height;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      ctx.drawImage(
+        image,
+        completedCrop.x * scaleX,
+        completedCrop.y * scaleY,
+        completedCrop.width * scaleX,
+        completedCrop.height * scaleY,
+        0, 0, completedCrop.width, completedCrop.height
+      );
+    }
+
+    const base64 = canvas.toDataURL('image/jpeg');
+    setSelectedImage({ data: base64.split(',')[1], mimeType: 'image/jpeg' });
+    setIsCropping(false);
+  };
+
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if ((!input.trim() && !selectedImage) || isLoading) return;
+
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const userMessage: Message = {
+      role: 'user',
+      parts: [
+        { text: input.trim() || (selectedImage ? "What is in this image?" : "") },
+        ...(selectedImage ? [{ inlineData: selectedImage }] : [])
+      ],
+      timestamp,
     };
 
-    return (
-        <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end font-sans">
-            {isOpen && (
-                <div className="mb-4 w-[350px] sm:w-[420px] h-[600px] bg-[#0f0f0f] rounded-3xl shadow-2xl border border-gray-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    
-                    {/* Header */}
-                    <header className="relative flex justify-between items-center px-5 py-4 bg-[#161616] border-b border-gray-800">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-500/10 rounded-xl">
-                                <Sparkles className="text-blue-400 w-5 h-5" />
-                            </div>
-                            <h1 className="text-sm font-bold text-white tracking-tight">Wallcraft AI</h1>
-                        </div>
+    const currentHistory = [...messages];
+    setMessages((prev) => [...prev, userMessage]);
+    const currentImage = selectedImage;
+    setInput('');
+    setSelectedImage(null);
+    setIsLoading(true);
 
-                        <div className="flex items-center gap-3">
-                            {/* Language Quick Toggle */}
-                            <button 
-                                onClick={() => setLanguage(language === 'th' ? 'en' : 'th')}
-                                className="flex items-center gap-1 bg-[#262626] px-2 py-1 rounded-lg border border-gray-700 hover:border-blue-500 transition-all"
-                            >
-                                <Languages className="w-3.5 h-3.5 text-blue-400" />
-                                <span className="text-[10px] font-bold text-white uppercase">{language}</span>
-                            </button>
-                            
-                            <Settings 
-                                className={`w-4 h-4 cursor-pointer transition-colors ${showSettings ? 'text-blue-400' : 'text-gray-600 hover:text-white'}`}
-                                onClick={() => setShowSettings(!showSettings)}
-                            />
-                            <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
-                        </div>
+    try {
+      let assistantText = '';
+      const botMessageId = messages.length + 1;
+      
+      setMessages((prev) => [...prev, { 
+        role: 'model', 
+        parts: [{ text: '' }], 
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+      }]);
 
-                        {/* Dropdown Settings Menu */}
-                        {showSettings && (
-                            <div className="absolute top-16 right-5 w-40 bg-[#1a1a1a] border border-gray-800 rounded-xl shadow-2xl p-2 z-10 animate-in fade-in zoom-in duration-200">
-                                <p className="text-[10px] text-gray-500 px-2 mb-1 uppercase font-bold">Select Language</p>
-                                <button 
-                                    onClick={() => { setLanguage('th'); setShowSettings(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${language === 'th' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:bg-white/5'}`}
-                                >
-                                    ภาษาไทย (Thai)
-                                </button>
-                                <button 
-                                    onClick={() => { setLanguage('en'); setShowSettings(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${language === 'en' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:bg-white/5'}`}
-                                >
-                                    English (US)
-                                </button>
-                            </div>
-                        )}
-                    </header>
+      const stream = sendMessageStream(
+        currentHistory, 
+        userMessage.parts[0].text || "", 
+        currentImage || undefined, 
+        systemPrompt,
+        userApiKey
+      );
+      
+      for await (const chunk of stream) {
+        assistantText += chunk;
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = {
+            role: 'model',
+            parts: [{ text: assistantText }],
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          return newMessages;
+        });
+      }
+    } catch (error: any) {
+      console.error('Chat error:', error);
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
+      
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = {
+          role: 'model',
+          parts: [{ text: `⚠️ **Error:** ${errorMessage}` }],
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        return newMessages;
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-                    {/* Chat Area */}
-                    <main ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-6 bg-[#0f0f0f] scrollbar-hide">
-                        {messages.map((msg, idx) => (
-                            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`p-4 rounded-2xl text-sm ${
-                                    msg.role === 'user' ? 'bg-[#262626] text-white rounded-tr-none' : 'bg-[#1a1a1a] text-gray-300 rounded-tl-none border border-gray-800'
-                                }`}>
-                                    {msg.image && <img src={msg.image} className="rounded-xl mb-3 w-full object-cover max-h-48" alt="upload" />}
-                                    <p>{msg.content}</p>
-                                </div>
-                            </div>
-                        ))}
-                        {loading && <div className="text-[11px] text-gray-500 animate-pulse italic">AI is thinking...</div>}
-                    </main>
+  return (
+    <>
+      {/* Floating Chat Bubble Button — FIX 1: added aria-label */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close chat' : 'Open chat'}
+        className="fixed bottom-6 right-6 z-[9999] flex h-14 w-14 items-center justify-center rounded-full bg-[#C5A059] text-white shadow-2xl transition-transform hover:scale-110 active:scale-95"
+      >
+        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
+        {!isOpen && messages.length === 0 && (
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold animate-bounce">1</span>
+        )}
+      </button>
 
-                    {/* Input Area */}
-                    <footer className="p-5 bg-[#161616] border-t border-gray-800">
-                        <div className="flex items-center gap-3">
-                            <button onClick={() => fileInputRef.current?.click()} className="p-3 bg-[#262626] rounded-2xl border border-gray-700">
-                                <ImageIcon className="w-5 h-5 text-gray-400" />
-                            </button>
-                            <div className="relative flex-1">
-                                <input 
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder={language === 'th' ? "ถามเรื่องลายไม้..." : "Ask about wood patterns..."}
-                                    className="w-full bg-[#0a0a0a] text-gray-200 rounded-2xl py-3 px-5 text-sm focus:outline-none border border-gray-800"
-                                />
-                                <button onClick={() => handleSend()} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-blue-500/10 rounded-xl">
-                                    <Send className="w-4 h-4 text-blue-500" />
-                                </button>
-                            </div>
-                        </div>
-                        <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleSend(e.target.files[0])} className="hidden" accept="image/*" />
-                    </footer>
+      {/* Messenger Box */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-24 right-6 z-[9998] flex h-[600px] w-[90vw] max-w-[400px] flex-col overflow-hidden rounded-3xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between bg-[#0f0f0f] px-5 py-4 text-white border-b border-[#2a2a2a]">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Sparkles size={18} className="text-[#C5A059]" />
+                  <div className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-[#0f0f0f]" />
                 </div>
-            )}
+                <div>
+                  <p className="text-sm font-bold">Wallcraft Assistant</p>
+                  <p className="text-[10px] text-slate-500">Online | พร้อมช่วยเหลือ</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {/* FIX 2: added aria-label to Clear Chat button */}
+                <button
+                  onClick={() => setMessages([])}
+                  aria-label="Clear chat"
+                  title="Clear Chat"
+                  className="rounded-full p-1.5 hover:bg-white/10 text-slate-400"
+                >
+                  <Trash2 size={18} />
+                </button>
+                {/* FIX 3: added aria-label to Settings button */}
+                <button
+                  onClick={() => setShowSettings(!showSettings)}
+                  aria-label="Toggle settings"
+                  className="rounded-full p-1.5 hover:bg-white/10 text-slate-400"
+                >
+                  <Settings size={18} />
+                </button>
+                {/* FIX 4: added aria-label to Close button */}
+                <button
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close chat window"
+                  className="rounded-full p-1.5 hover:bg-white/10 text-slate-400"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
 
-            {/* Main Toggle */}
-            <button onClick={() => setIsOpen(!isOpen)} className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all bg-blue-500">
-                {isOpen ? <X className="text-white w-6 h-6" /> : <MessageCircle className="text-white w-7 h-7" />}
-            </button>
-        </div>
-    );
+            {/* Settings Overlay */}
+            <AnimatePresence>
+              {showSettings && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="bg-[#0f0f0f] border-b border-[#2a2a2a] overflow-hidden"
+                >
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      {/* FIX 5: added htmlFor + id to associate label with input */}
+                      <label htmlFor="api-key-input" className="block text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Gemini API Key (Optional Fallback)
+                      </label>
+                      <button 
+                        onClick={() => setUserApiKey('')} 
+                        aria-label="Reset API key"
+                        className="text-[9px] text-[#C5A059] hover:underline"
+                      >
+                        Reset Key
+                      </button>
+                    </div>
+                    <input
+                      id="api-key-input"
+                      type="password"
+                      value={userApiKey}
+                      onChange={(e) => setUserApiKey(e.target.value)}
+                      aria-label="Gemini API Key"
+                      placeholder="Paste your API key here if needed..."
+                      className="w-full mb-4 rounded-xl border border-[#333] bg-[#1a1a1a] p-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#C5A059]"
+                    />
+                    {/* FIX 6: added htmlFor + id to associate label with textarea */}
+                    <label htmlFor="system-prompt-input" className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      System Instruction
+                    </label>
+                    <textarea
+                      id="system-prompt-input"
+                      value={systemPrompt}
+                      onChange={(e) => setSystemPrompt(e.target.value)}
+                      aria-label="System instruction"
+                      className="w-full rounded-xl border border-[#333] bg-[#1a1a1a] p-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#C5A059]"
+                      rows={4}
+                    />
+                    <button
+                      onClick={() => setShowSettings(false)}
+                      className="mt-3 w-full rounded-xl bg-[#C5A059] py-2 text-xs font-bold text-white hover:bg-[#b38f4d] transition-all"
+                    >
+                      Save & Close
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#1a1a1a] scrollbar-hide">
+              {messages.length === 0 && (
+                <div className="flex h-full flex-col items-center justify-center text-center p-6">
+                  <Bot size={40} className="text-[#C5A059] mb-4 opacity-20" />
+                  <p className="text-xs text-slate-500">สวัสดีครับ! มีอะไรให้ช่วยเกี่ยวกับวอลเปเปอร์ Wallcraft ไหมครับ?</p>
+                </div>
+              )}
+              {messages.map((msg, idx) => (
+                <div key={idx} className={cn("flex w-full gap-2", msg.role === 'user' ? "flex-row-reverse" : "flex-row")}>
+                  <div className={cn(
+                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-[12px] shadow-sm border border-[#333]",
+                    msg.role === 'user' ? "bg-[#C5A059] text-white border-none" : "bg-[#0a0a0a] text-white"
+                  )}>
+                    {msg.parts.map((part, pIdx) => (
+                      <div key={pIdx}>
+                        {/* FIX 7: added alt to inline message image */}
+                        {part.inlineData && (
+                          <img
+                            src={`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`}
+                            alt="Uploaded image"
+                            className="mb-2 rounded-lg max-w-full"
+                          />
+                        )}
+                        {part.text && (
+                          <div className="prose prose-invert prose-sm max-w-none">
+                            <Markdown>{part.text}</Markdown>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    <div className="mt-1 text-[9px] opacity-50 text-right">
+                      {msg.timestamp}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {isLoading && messages[messages.length - 1]?.role === 'user' && (
+                <div className="flex w-full gap-2">
+                  <div className="bg-[#0a0a0a] border border-[#333] rounded-2xl px-4 py-2 shadow-sm">
+                    <Loader2 size={16} className="animate-spin text-slate-600" />
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area */}
+            <div className="border-t border-[#2a2a2a] bg-[#0f0f0f] p-3">
+              <form onSubmit={handleSend} className="flex flex-col gap-2">
+                {selectedImage && (
+                  <div className="relative inline-block w-14">
+                    {/* FIX 8: added alt to selected image preview thumbnail */}
+                    <img
+                      src={`data:${selectedImage.mimeType};base64,${selectedImage.data}`}
+                      alt="Selected image preview"
+                      className="h-14 w-14 rounded-lg border border-[#C5A059]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setSelectedImage(null)}
+                      aria-label="Remove selected image"
+                      className="absolute -top-1 -right-1 bg-red-500 rounded-full p-0.5"
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    {/* Image upload label — wraps a hidden input, label text is the icon so needs aria-label on the label */}
+                    <label className="cursor-pointer text-slate-400 hover:text-white p-1" aria-label="Upload image">
+                      <ImageIcon size={18} />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        aria-label="Upload image file"
+                        onChange={handleImageUpload}
+                      />
+                    </label>
+                    {/* Mic button */}
+                    <button
+                      type="button"
+                      onClick={toggleListening}
+                      aria-label={isListening ? 'Stop listening' : 'Start voice input'}
+                      className={cn("p-1 transition-colors", isListening ? "text-red-500 animate-pulse" : "text-slate-400 hover:text-white")}
+                    >
+                      {isListening ? <Square size={16} fill="currentColor" /> : <Mic size={18} />}
+                    </button>
+                  </div>
+                  {/* FIX 9: added aria-label to chat text input */}
+                  <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    aria-label="Type your message"
+                    placeholder="ถามคำถามที่นี่..."
+                    className="flex-1 rounded-full border border-[#333] bg-[#1a1a1a] px-4 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#C5A059]"
+                  />
+                  {/* Send button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    aria-label="Send message"
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#C5A059] text-white disabled:opacity-50"
+                  >
+                    {isLoading ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Crop Modal */}
+      <AnimatePresence>
+        {isCropping && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4">
+            <div className="bg-[#0f0f0f] p-6 rounded-3xl border border-[#2a2a2a] max-w-2xl w-full">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-white">
+                  <CropIcon size={18} className="text-[#C5A059]" />
+                  <span className="font-semibold text-sm">เลือกพื้นที่ที่ต้องการเน้น</span>
+                </div>
+                <button
+                  onClick={() => setIsCropping(false)}
+                  aria-label="Close crop modal"
+                  className="text-slate-400 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="flex items-center justify-center bg-[#1a1a1a] rounded-xl overflow-hidden mb-6">
+                <ReactCrop crop={crop} onChange={c => setCrop(c)} onComplete={c => setCompletedCrop(c)}>
+                  {/* FIX 10 (bonus): added alt to crop modal image */}
+                  <img ref={imgRef} src={imgSrc} alt="Image to crop" className="max-h-[60vh] mx-auto" />
+                </ReactCrop>
+              </div>
+              <div className="flex justify-end gap-3">
+                <button onClick={() => setIsCropping(false)} className="px-6 py-2 text-sm text-white hover:bg-white/5 rounded-xl">ยกเลิก</button>
+                <button onClick={handleCropComplete} className="bg-[#C5A059] px-8 py-2 rounded-xl text-sm font-bold text-white hover:bg-[#b38f4d]">ยืนยัน</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }
